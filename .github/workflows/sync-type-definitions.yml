@@ -68,7 +68,7 @@ jobs:
           git commit -m "chores: 同步主应用类型定义并更新版本号"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: 清理工作目录
         if: always()
