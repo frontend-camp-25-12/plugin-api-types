@@ -3,6 +3,7 @@ name: 同步类型定义
 on:
   repository_dispatch:
     types: [update-type-definitions]
+  workflow_dispatch:
 
 jobs:
   sync-types:
@@ -10,33 +11,65 @@ jobs:
     steps:
       - name: 签出 plugin-api-types 仓库
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 克隆 main-app 仓库
-        run: git clone https://github.com/frontend-camp-25-12/main-app workspace-main-app
+        run: git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/frontend-camp-25-12/main-app workspace-main-app
 
-      - name: 安装依赖
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 安装依赖并构建
         working-directory: workspace-main-app
         run: |
           npm install
           npm run build:types
 
-      - name: 复制dts
+      - name: 复制dts文件
         run: |
           cp workspace-main-app/out/types/preload/generated/ipc-api-plugin.d.ts ./ipc-api-plugin.d.ts
 
       - name: 自动递增 package.json 版本号
         run: |
-          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));let v=p.version.split('.').map(Number);v[2]++;p.version=v.join('.');fs.writeFileSync('package.json',JSON.stringify(p,null,2));"
+          node -e "
+          const fs = require('fs');
+          const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const version = packageJson.version.split('.').map(Number);
+          version[2]++;
+          packageJson.version = version.join('.');
+          fs.writeFileSync('package.json', JSON.stringify(packageJson, null, 2) + '\n');
+          console.log('版本号已更新为:', packageJson.version);
+          "
 
-      - name: 配置 git
+      - name: 检查是否有文件变化
+        id: check_changes
+        run: |
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "没有检测到文件变化"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "检测到文件变化"
+          fi
+
+      - name: 配置 git 用户信息
+        if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           git config user.name "sync-bot"
           git config user.email "example@example.com"
 
-      - name: 提交并推送
+      - name: 提交并推送更改
+        if: steps.check_changes.outputs.has_changes == 'true'
         run: |
-          git add ipc-api-plugin.d.ts
-          git commit -m "chore: 同步主应用类型定义" || echo "No changes to commit"
+          git add ipc-api-plugin.d.ts package.json
+          git commit -m "chores: 同步主应用类型定义并更新版本号"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 清理工作目录
+        if: always()
+        run: rm -rf workspace-main-app
