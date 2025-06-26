@@ -1,5 +1,5 @@
 import { PluginEnterAction } from '../../share/plugins/api.type.d';
-export declare class PlatformApi {
+declare class PlatformApi {
     pluginId: string;
     constructor(pluginId: string);
     /**
@@ -25,3 +25,11 @@ export declare class PlatformApi {
      */
     onPluginEnter(callback: (action: PluginEnterAction) => void): void;
 }
+
+declare global {
+  interface Window {
+    platform: PlatformApi;
+  }
+}
+
+export {};
