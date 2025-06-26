@@ -28,9 +28,9 @@ jobs:
           npm install
           npm run build:types
 
-      - name: 复制dts文件
+      - name: 复制 types 文件夹下的所有内容
         run: |
-          cp workspace-main-app/out/types/preload/generated/ipc-api-plugin.d.ts ./ipc-api-plugin.d.ts
+          cp -r workspace-main-app/out/types/* ./
 
       - name: 自动递增 package.json 版本号
         run: |

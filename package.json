@@ -1,6 +1,6 @@
 {
   "name": "@types/plugin-api-types",
   "version": "1.0.2",
-  "types": "ipc-api-plugin.d.ts",
+  "types": "index.d.ts",
   "dependencies": {}
 }
