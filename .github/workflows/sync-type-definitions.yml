@@ -1,0 +1,42 @@
+name: 同步类型定义
+
+on:
+  repository_dispatch:
+    types: [update-type-definitions]
+
+jobs:
+  sync-types:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 签出 plugin-api-types 仓库
+        uses: actions/checkout@v4
+
+      - name: 克隆 main-app 仓库
+        run: git clone https://github.com/frontend-camp-25-12/main-app workspace-main-app
+
+      - name: 安装依赖
+        working-directory: workspace-main-app
+        run: |
+          npm install
+          npm run build:types
+
+      - name: 复制dts
+        run: |
+          cp workspace-main-app/out/types/preload/generated/ipc-api-plugin.d.ts ./ipc-api-plugin.d.ts
+
+      - name: 自动递增 package.json 版本号
+        run: |
+          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));let v=p.version.split('.').map(Number);v[2]++;p.version=v.join('.');fs.writeFileSync('package.json',JSON.stringify(p,null,2));"
+
+      - name: 配置 git
+        run: |
+          git config user.name "sync-bot"
+          git config user.email "example@example.com"
+
+      - name: 提交并推送
+        run: |
+          git add ipc-api-plugin.d.ts
+          git commit -m "chore: 同步主应用类型定义" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
