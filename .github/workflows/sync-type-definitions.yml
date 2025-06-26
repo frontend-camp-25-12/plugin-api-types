@@ -15,7 +15,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 克隆 main-app 仓库
-        run: git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/frontend-camp-25-12/main-app workspace-main-app
+        run: git clone https://${{ secrets.GH_TOKEN }}@github.com/frontend-camp-25-12/main-app workspace-main-app
 
       - name: 设置 Node.js
         uses: actions/setup-node@v4
