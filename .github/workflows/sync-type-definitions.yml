@@ -64,7 +64,7 @@ jobs:
       - name: 提交并推送更改
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
-          git add ipc-api-plugin.d.ts package.json
+          git add .
           git commit -m "chores: 同步主应用类型定义并更新版本号"
           git push
         env:
