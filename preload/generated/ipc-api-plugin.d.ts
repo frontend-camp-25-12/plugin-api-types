@@ -20,6 +20,11 @@ declare class PlatformApi {
       */
     configSet(key: string, value: string): Promise<void>;
     /**
+      * 打开快捷键设置页面
+      * @param code 要跳转到的希望用户设置快捷键的功能代码
+      */
+    openHotkeySettings(code: string): Promise<void>;
+    /**
      * 插件进入事件
       * @param action PluginEnterAction
      */
