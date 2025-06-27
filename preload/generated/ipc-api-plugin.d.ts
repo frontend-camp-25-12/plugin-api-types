@@ -25,6 +25,10 @@ declare class PlatformApi {
       */
     openHotkeySettings(code: string): Promise<void>;
     /**
+      * 获得上一次enter事件的action，可避免插件中onPluginEnter没有及时监听导致错过action的情况。
+      */
+    getLastPluginEnterAction(): Promise<PluginEnterAction | undefined>;
+    /**
      * 插件进入事件
       * @param action PluginEnterAction
      */
