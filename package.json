@@ -1,6 +1,6 @@
 {
   "name": "@types/plugin-api-types",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "types": "index.d.ts",
   "dependencies": {}
 }
