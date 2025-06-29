@@ -12,13 +12,13 @@ declare class PlatformApi {
       * @param key 配置项key
       * @param defalut 默认值
       */
-    configGet(key: string, defalut: string): Promise<string>;
+    configGet(key: string, defalut: any): Promise<any>;
     /**
       * 设置插件配置项
       * @param key 配置项key
       * @param value 配置项值
       */
-    configSet(key: string, value: string): Promise<void>;
+    configSet(key: string, value: any): Promise<void>;
     /**
       * 打开快捷键设置页面
       * @param code 要跳转到的希望用户设置快捷键的功能代码
