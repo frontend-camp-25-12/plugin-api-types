@@ -29,6 +29,10 @@ declare class PlatformApi {
       */
     getLastPluginEnterAction(): Promise<PluginEnterAction | undefined>;
     /**
+      * 插件主动退出
+      */
+    closeSelf(): Promise<void>;
+    /**
      * 插件进入事件
       * @param action PluginEnterAction
      */
