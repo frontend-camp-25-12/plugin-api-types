@@ -33,10 +33,18 @@ declare class PlatformApi {
       */
     closeSelf(): Promise<void>;
     /**
+      * 获取当前本地化偏好
+      */
+    getLocalePreference(): Promise<string>;
+    /**
      * 插件进入事件
       * @param action PluginEnterAction
      */
     onPluginEnter(callback: (action: PluginEnterAction) => void): void;
+    /**
+     * 语言变更事件
+     */
+    onLocalePreferenceChange(callback: (language: string) => void): void;
 }
 
 declare global {
